@@ -119,8 +119,8 @@ pub fn compare_iter<T, L: Iterator<T>, R: Iterator<T>>(left: L, right: R,
     }
 }
 
-/// Compares two strings.
-/// It skips whitespaces and handles a series of decimal digits case sensitively.
+/// Compares two strings case-sensitively.
+/// It skips any Unicode whitespaces and handles a series of decimal digits.
 pub fn compare(left: &str, right: &str) -> Ordering {
     compare_iter(left.chars(), right.chars(),
                  |&c| c.is_whitespace(),
@@ -129,8 +129,10 @@ pub fn compare(left: &str, right: &str) -> Ordering {
 }
 
 /// Compares two strings case-insensitively.
-/// It skips whitespaces and handles a series of decimal digits case insensitively.
+/// It skips any Unicode whitespaces and handles a series of decimal digits.
 pub fn compare_ignore_case(left: &str, right: &str) -> Ordering {
+    // XXX what we really want is a case folding!
+    // Unicode case folding can be done iteratively, but currently we don't have them in stdlib.
     compare_iter(left.chars(), right.chars(),
                  |&c| c.is_whitespace(),
                  |&l, &r| l.to_lowercase().cmp(&r.to_lowercase()),
