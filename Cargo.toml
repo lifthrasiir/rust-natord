@@ -1,0 +1,10 @@
+[package]
+
+name = "natord"
+version = "1.0.0"
+authors = ["Kang Seonghoon <public+rust@mearie.org>"]
+
+[[lib]]
+
+name = "natord"
+path = "lib.rs"
