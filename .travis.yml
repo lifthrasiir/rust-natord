@@ -6,11 +6,9 @@ install:
   - tar xfz rust-nightly-x86_64-unknown-linux-gnu.tar.gz
   - (cd rust-nightly-x86_64-unknown-linux-gnu/ && sudo ./install.sh)
 # - sudo apt-get install rust-nightly
-  - git clone --recursive https://github.com/rust-lang/cargo
-  - cd cargo && make && make install
 script:
-  - cargo build
-  - cargo test
+  - rustc lib.rs
+  - rustc --test lib.rs -o natord-test && ./natord-test
 branches:
   only:
     - master
