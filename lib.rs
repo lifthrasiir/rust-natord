@@ -2,7 +2,7 @@
 // Copyright (c) 2014, Kang Seonghoon.
 // See README.md and LICENSE.txt for details.
 
-#![crate_id = "natord#1.0.0"]
+#![crate_name = "natord"]
 #![crate_type = "lib"]
 
 #![feature(macro_rules)]

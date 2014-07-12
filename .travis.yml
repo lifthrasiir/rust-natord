@@ -1,14 +1,13 @@
 env:
   global:
     - secure: XpYCYw/porQrkHIFlx5kVk/MUqoM7MtPvzQ/7EVFn/lChwr/GEFl8T1aGlt3HJJU3hKp1KeaDOuN8ew7TE3+ZS6KfTPv75fSTJuz10Z2mYH+7th4H8Yw8jAtK4ZkOmUeJGcpVQdPQUkyVCo1V6SUv+42M8HZBeJdR48RShT23Zw=
-#before_install:
-# - yes | sudo add-apt-repository ppa:hansjorg/rust
-# - sudo apt-get update
-install:
+before_install:
+#  - yes | sudo add-apt-repository ppa:hansjorg/rust
+#  - sudo apt-get update
+#  - sudo apt-get install rust-nightly
   - curl -O http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
   - tar xfz rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-  - (cd rust-nightly-x86_64-unknown-linux-gnu/ && sudo ./install.sh)
-# - sudo apt-get install rust-nightly
+  - (cd rust-nightly-x86_64-unknown-linux-gnu/ && sudo ./install.sh --prefix=/usr)
 script:
   - rustc lib.rs
   - rustc --test lib.rs -o natord-test && ./natord-test
