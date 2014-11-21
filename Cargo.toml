@@ -1,10 +1,14 @@
 [package]
-
 name = "natord"
 version = "1.0.0"
 authors = ["Kang Seonghoon <public+rust@mearie.org>"]
 
-[lib]
+description = "Natural ordering for Rust"
+homepage = "https://github.com/lifthrasiir/rust-natord"
+repository = "https://github.com/lifthrasiir/rust-natord"
+readme = "README.md"
+license = "MIT"
 
+[lib]
 name = "natord"
 path = "lib.rs"
