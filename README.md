@@ -1,5 +1,11 @@
-Rust-natord
-===========
+[Natord][doc]
+=============
+
+[![Natord on Travis CI][travis-image]][travis]
+
+[travis-image]: https://travis-ci.org/lifthrasiir/rust-natord.png
+[travis]: https://travis-ci.org/lifthrasiir/rust-natord
+[doc]: https://lifthrasiir.github.io/rust-natord/natord/
 
 Natural ordering for Rust. This allows for the comparison like this:
 

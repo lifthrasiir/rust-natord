@@ -1,4 +1,4 @@
-// Rust-natord: Natural ordering for Rust.
+// Natord: Natural ordering for Rust.
 // Copyright (c) 2014, Kang Seonghoon.
 // See README.md and LICENSE.txt for details.
 
@@ -40,28 +40,28 @@ pub fn compare_iter<T, L: Iterator<T>, R: Iterator<T>>(left: L, right: R,
     let mut ll;
     let mut rr;
 
-    macro_rules! read_left(
+    macro_rules! read_left {
         () => ({
             l = left.next();
             ll = l.as_ref().and_then(|v| to_digit(v));
         })
-    );
+    }
 
-    macro_rules! read_right(
+    macro_rules! read_right {
         () => ({
             r = right.next();
             rr = r.as_ref().and_then(|v| to_digit(v));
         })
-    );
+    }
 
-    macro_rules! return_unless_equal(
+    macro_rules! return_unless_equal {
         ($ord:expr) => (
             match $ord {
                 Equal => {}
                 lastcmp => return lastcmp,
             }
         )
-    );
+    }
 
     read_left!();
     read_right!();
