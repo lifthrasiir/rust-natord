@@ -45,14 +45,14 @@ pub fn compare_iter<T, L: Iterator<T>, R: Iterator<T>>(left: L, right: R,
             l = left.next();
             ll = l.as_ref().and_then(|v| to_digit(v));
         })
-    )
+    );
 
     macro_rules! read_right(
         () => ({
             r = right.next();
             rr = r.as_ref().and_then(|v| to_digit(v));
         })
-    )
+    );
 
     macro_rules! return_unless_equal(
         ($ord:expr) => (
@@ -61,7 +61,7 @@ pub fn compare_iter<T, L: Iterator<T>, R: Iterator<T>>(left: L, right: R,
                 lastcmp => return lastcmp,
             }
         )
-    )
+    );
 
     read_left!();
     read_right!();
