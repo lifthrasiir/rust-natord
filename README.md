@@ -1,13 +1,13 @@
-[Natord][doc]
-=============
+[Natord][doc] 1.0.1
+===================
 
 [![Natord on Travis CI][travis-image]][travis]
 
 [travis-image]: https://travis-ci.org/lifthrasiir/rust-natord.png
 [travis]: https://travis-ci.org/lifthrasiir/rust-natord
-[doc]: https://lifthrasiir.github.io/rust-natord/natord/
 
-Natural ordering for Rust. This allows for the comparison like this:
+Natural ordering for Rust. (also known as `rust-natord`)
+This allows for the comparison like this:
 
 ~~~~ {.rust}
 let mut files = vec!("rfc2086.txt", "rfc822.txt", "rfc1.txt");
@@ -23,5 +23,6 @@ This version of natural ordering is inspired by
 [Martin Pool's `strnatcmp.c`](http://sourcefrog.net/projects/natsort/).
 See the test cases in the source code to see what it can do and it cannot.
 
-Rust-natord is written by Kang Seonghoon and licensed under the MIT/X11 license.
+Natord is written by Kang Seonghoon and licensed under the MIT/X11 license.
 
+[doc]: https://lifthrasiir.github.io/rust-natord/

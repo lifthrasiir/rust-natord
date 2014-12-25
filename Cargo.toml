@@ -5,7 +5,7 @@ authors = ["Kang Seonghoon <public+rust@mearie.org>"]
 
 description = "Natural ordering for Rust"
 homepage = "https://github.com/lifthrasiir/rust-natord"
-documentation = "https://lifthrasiir.github.io/rust-natord/natord/"
+documentation = "https://lifthrasiir.github.io/rust-natord/"
 repository = "https://github.com/lifthrasiir/rust-natord"
 keywords = ["sort", "order", "natural"]
 readme = "README.md"
