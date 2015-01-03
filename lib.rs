@@ -26,6 +26,9 @@ This version of natural ordering is inspired by
 
 #![feature(macro_rules)]
 
+use std::cmp::Ordering;
+use std::cmp::Ordering::{Less, Equal, Greater};
+
 /// Compares two iterators of "characters" possibly containing "digits".
 /// The natural ordering can be customized with the following parameters:
 ///
@@ -147,6 +150,8 @@ pub fn compare_ignore_case(left: &str, right: &str) -> Ordering {
 #[cfg(test)]
 mod tests {
     use super::compare;
+    use std::cmp::Ordering;
+    use std::cmp::Ordering::{Less, Equal, Greater};
 
     fn check_total_order(strs: &[&str]) {
         fn ordering_to_op(ord: Ordering) -> &'static str {
