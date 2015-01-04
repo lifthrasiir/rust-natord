@@ -1,10 +1,10 @@
 // Natord: Natural ordering for Rust.
-// Copyright (c) 2014, Kang Seonghoon.
+// Copyright (c) 2014-2015, Kang Seonghoon.
 // See README.md and LICENSE.txt for details.
 
 /*!
 
-# Natord 1.0.1
+# Natord 1.0.2
 
 Natural ordering for Rust. (also known as `rust-natord`)
 This allows for the comparison like this:
