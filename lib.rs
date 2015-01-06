@@ -4,7 +4,7 @@
 
 /*!
 
-# Natord 1.0.3
+# Natord 1.0.4
 
 Natural ordering for Rust. (also known as `rust-natord`)
 This allows for the comparison like this:
@@ -36,11 +36,13 @@ use std::cmp::Ordering::{Less, Equal, Greater};
 ///   other than splitting two consecutive digits.
 /// * `cmp` compares two "characters", assuming that they are not "digits".
 /// * `to_digit` converts a "character" into a "digit" if possible. The digit of zero is special.
-pub fn compare_iter<T, L, R>(left: L, right: R,
-                             skip: |&T| -> bool,
-                             cmp: |&T, &T| -> Ordering,
-                             to_digit: |&T| -> Option<int>) -> Ordering
-        where L: Iterator<Item=T>, R: Iterator<Item=T> {
+pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(left: L, right: R, mut skip: Skip, mut cmp: Cmp,
+                                                 mut to_digit: ToDigit) -> Ordering
+        where L: Iterator<Item=T>,
+              R: Iterator<Item=T>,
+              Skip: for<'a> FnMut(&'a T) -> bool,
+              Cmp: for<'a> FnMut(&'a T, &'a T) -> Ordering,
+              ToDigit: for<'a> FnMut(&'a T) -> Option<int> {
     let mut left = left.fuse();
     let mut right = right.fuse();
 
