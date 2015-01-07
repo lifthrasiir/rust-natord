@@ -1,4 +1,4 @@
-[Natord][doc] 1.0.4
+[Natord][doc] 1.0.5
 ===================
 
 [![Natord on Travis CI][travis-image]][travis]

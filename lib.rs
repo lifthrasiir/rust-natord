@@ -4,7 +4,7 @@
 
 /*!
 
-# Natord 1.0.4
+# Natord 1.0.5
 
 Natural ordering for Rust. (also known as `rust-natord`)
 This allows for the comparison like this:
@@ -23,8 +23,6 @@ This version of natural ordering is inspired by
 
 #![crate_name = "natord"]
 #![crate_type = "lib"]
-
-#![feature(macro_rules)]
 
 use std::cmp::Ordering;
 use std::cmp::Ordering::{Less, Equal, Greater};
