@@ -4,7 +4,7 @@
 
 /*!
 
-# Natord 1.0.5
+# Natord 1.0.6
 
 Natural ordering for Rust. (also known as `rust-natord`)
 This allows for the comparison like this:
@@ -12,7 +12,7 @@ This allows for the comparison like this:
 ~~~~ {.rust}
 let mut files = vec!("rfc2086.txt", "rfc822.txt", "rfc1.txt");
 files.sort_by(|&a, &b| natord::compare(a, b));
-assert_eq!(files.as_slice(), ["rfc1.txt", "rfc822.txt", "rfc2086.txt"].as_slice());
+assert_eq!(files, ["rfc1.txt", "rfc822.txt", "rfc2086.txt"]);
 ~~~~
 
 There are multiple natural ordering algorithms available.
@@ -20,6 +20,8 @@ This version of natural ordering is inspired by
 [Martin Pool's `strnatcmp.c`](http://sourcefrog.net/projects/natsort/).
 
 */
+
+#![allow(unstable)]
 
 #![crate_name = "natord"]
 #![crate_type = "lib"]
@@ -40,7 +42,7 @@ pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(left: L, right: R, mut skip: Sk
               R: Iterator<Item=T>,
               Skip: for<'a> FnMut(&'a T) -> bool,
               Cmp: for<'a> FnMut(&'a T, &'a T) -> Ordering,
-              ToDigit: for<'a> FnMut(&'a T) -> Option<int> {
+              ToDigit: for<'a> FnMut(&'a T) -> Option<isize> {
     let mut left = left.fuse();
     let mut right = right.fuse();
 
@@ -134,7 +136,7 @@ pub fn compare(left: &str, right: &str) -> Ordering {
     compare_iter(left.chars(), right.chars(),
                  |&c| c.is_whitespace(),
                  |&l, &r| l.cmp(&r),
-                 |&c| c.to_digit(10).map(|v| v as int))
+                 |&c| c.to_digit(10).map(|v| v as isize))
 }
 
 /// Compares two strings case-insensitively.
@@ -145,7 +147,7 @@ pub fn compare_ignore_case(left: &str, right: &str) -> Ordering {
     compare_iter(left.chars(), right.chars(),
                  |&c| c.is_whitespace(),
                  |&l, &r| l.to_lowercase().cmp(&r.to_lowercase()),
-                 |&c| c.to_digit(10).map(|v| v as int))
+                 |&c| c.to_digit(10).map(|v| v as isize))
 }
 
 #[cfg(test)]

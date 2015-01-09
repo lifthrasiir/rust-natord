@@ -1,6 +1,6 @@
 [package]
 name = "natord"
-version = "1.0.5"
+version = "1.0.6"
 authors = ["Kang Seonghoon <public+rust@mearie.org>"]
 
 description = "Natural ordering for Rust"
