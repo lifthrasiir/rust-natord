@@ -4,7 +4,7 @@
 
 /*!
 
-# Natord 1.0.7
+# Natord 1.0.8
 
 Natural ordering for Rust. (also known as `rust-natord`)
 This allows for the comparison like this:
@@ -20,8 +20,6 @@ This version of natural ordering is inspired by
 [Martin Pool's `strnatcmp.c`](http://sourcefrog.net/projects/natsort/).
 
 */
-
-#![feature(unicode)] // lib stability features as per RFC #507
 
 #![crate_name = "natord"]
 #![crate_type = "lib"]
