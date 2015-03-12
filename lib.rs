@@ -144,9 +144,13 @@ pub fn compare(left: &str, right: &str) -> Ordering {
 pub fn compare_ignore_case(left: &str, right: &str) -> Ordering {
     // XXX what we really want is a case folding!
     // Unicode case folding can be done iteratively, but currently we don't have them in stdlib.
-    compare_iter(left.chars(), right.chars(),
+
+    let left_iter  =  left.chars().flat_map(|c| c.to_lowercase());
+    let right_iter = right.chars().flat_map(|c| c.to_lowercase());
+
+    compare_iter(left_iter, right_iter,
                  |&c| c.is_whitespace(),
-                 |&l, &r| l.to_lowercase().cmp(&r.to_lowercase()),
+                 |&l, &r| l.cmp(&r),
                  |&c| c.to_digit(10).map(|v| v as isize))
 }
 
