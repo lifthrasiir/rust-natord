@@ -85,20 +85,20 @@ pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(left: L, right: R, mut skip: Sk
                     if ll_ == 0 || rr_ == 0 {
                         // left-aligned matching. (`015` < `12`)
                         return_unless_equal!(ll_.cmp(&rr_));
-                        'digits: loop {
+                        'digits_left: loop {
                             read_left!();
                             read_right!();
                             match (ll, rr) {
                                 (Some(ll_), Some(rr_)) => return_unless_equal!(ll_.cmp(&rr_)),
                                 (Some(_), None) => return Greater,
                                 (None, Some(_)) => return Less,
-                                (None, None) => break 'digits,
+                                (None, None) => break 'digits_left,
                             }
                         }
                     } else {
                         // right-aligned matching. (`15` < `123`)
                         let mut lastcmp = ll_.cmp(&rr_);
-                        'digits: loop {
+                        'digits_right: loop {
                             read_left!();
                             read_right!();
                             match (ll, rr) {
@@ -109,7 +109,7 @@ pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(left: L, right: R, mut skip: Sk
                                 }
                                 (Some(_), None) => return Greater,
                                 (None, Some(_)) => return Less,
-                                (None, None) => break 'digits,
+                                (None, None) => break 'digits_right,
                             }
                         }
                         return_unless_equal!(lastcmp);
