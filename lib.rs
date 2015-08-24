@@ -4,7 +4,7 @@
 
 /*!
 
-# Natord 1.0.8
+# Natord 1.0.9
 
 Natural ordering for Rust. (also known as `rust-natord`)
 This allows for the comparison like this:
