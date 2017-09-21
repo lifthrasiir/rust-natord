@@ -37,13 +37,20 @@ use unicode_normalization::UnicodeNormalization;
 ///   other than splitting two consecutive digits.
 /// * `cmp` compares two "characters", assuming that they are not "digits".
 /// * `to_digit` converts a "character" into a "digit" if possible. The digit of zero is special.
-pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(left: L, right: R, mut skip: Skip, mut cmp: Cmp,
-                                                 mut to_digit: ToDigit) -> Ordering
-        where L: Iterator<Item=T>,
-              R: Iterator<Item=T>,
-              Skip: for<'a> FnMut(&'a T) -> bool,
-              Cmp: for<'a> FnMut(&'a T, &'a T) -> Ordering,
-              ToDigit: for<'a> FnMut(&'a T) -> Option<isize> {
+pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(
+    left: L,
+    right: R,
+    mut skip: Skip,
+    mut cmp: Cmp,
+    mut to_digit: ToDigit,
+) -> Ordering
+where
+    L: Iterator<Item = T>,
+    R: Iterator<Item = T>,
+    Skip: for<'a> FnMut(&'a T) -> bool,
+    Cmp: for<'a> FnMut(&'a T, &'a T) -> Ordering,
+    ToDigit: for<'a> FnMut(&'a T) -> Option<isize>,
+{
     let mut left = left.fuse();
     let mut right = right.fuse();
 
@@ -79,48 +86,56 @@ pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(left: L, right: R, mut skip: Sk
     read_right!();
     'nondigits: loop {
         // skip preceding whitespaces
-        while l.as_ref().map_or(false, |c| skip(c)) { read_left!(); }
-        while r.as_ref().map_or(false, |c| skip(c)) { read_right!(); }
+        while l.as_ref().map_or(false, |c| skip(c)) {
+            read_left!();
+        }
+        while r.as_ref().map_or(false, |c| skip(c)) {
+            read_right!();
+        }
 
         match (l, r) {
-            (Some(l_), Some(r_)) => match (ll, rr) {
-                (Some(ll_), Some(rr_)) => {
-                    if ll_ == 0 || rr_ == 0 {
-                        // left-aligned matching. (`015` < `12`)
-                        return_unless_equal!(ll_.cmp(&rr_));
-                        'digits_left: loop {
-                            read_left!();
-                            read_right!();
-                            match (ll, rr) {
-                                (Some(ll_), Some(rr_)) => return_unless_equal!(ll_.cmp(&rr_)),
-                                (Some(_), None) => return Greater,
-                                (None, Some(_)) => return Less,
-                                (None, None) => break 'digits_left,
-                            }
-                        }
-                    } else {
-                        // right-aligned matching. (`15` < `123`)
-                        let mut lastcmp = ll_.cmp(&rr_);
-                        'digits_right: loop {
-                            read_left!();
-                            read_right!();
-                            match (ll, rr) {
-                                (Some(ll_), Some(rr_)) => {
-                                    // `lastcmp` is only used when there are the same number of
-                                    // digits, so we only update it.
-                                    if lastcmp == Equal { lastcmp = ll_.cmp(&rr_); }
+            (Some(l_), Some(r_)) => {
+                match (ll, rr) {
+                    (Some(ll_), Some(rr_)) => {
+                        if ll_ == 0 || rr_ == 0 {
+                            // left-aligned matching. (`015` < `12`)
+                            return_unless_equal!(ll_.cmp(&rr_));
+                            'digits_left: loop {
+                                read_left!();
+                                read_right!();
+                                match (ll, rr) {
+                                    (Some(ll_), Some(rr_)) => return_unless_equal!(ll_.cmp(&rr_)),
+                                    (Some(_), None) => return Greater,
+                                    (None, Some(_)) => return Less,
+                                    (None, None) => break 'digits_left,
                                 }
-                                (Some(_), None) => return Greater,
-                                (None, Some(_)) => return Less,
-                                (None, None) => break 'digits_right,
                             }
+                        } else {
+                            // right-aligned matching. (`15` < `123`)
+                            let mut lastcmp = ll_.cmp(&rr_);
+                            'digits_right: loop {
+                                read_left!();
+                                read_right!();
+                                match (ll, rr) {
+                                    (Some(ll_), Some(rr_)) => {
+                                        // `lastcmp` is only used when there are the same number of
+                                        // digits, so we only update it.
+                                        if lastcmp == Equal {
+                                            lastcmp = ll_.cmp(&rr_);
+                                        }
+                                    }
+                                    (Some(_), None) => return Greater,
+                                    (None, Some(_)) => return Less,
+                                    (None, None) => break 'digits_right,
+                                }
+                            }
+                            return_unless_equal!(lastcmp);
                         }
-                        return_unless_equal!(lastcmp);
+                        continue 'nondigits; // do not read from the iterators again
                     }
-                    continue 'nondigits; // do not read from the iterators again
-                },
-                (_, _) => return_unless_equal!(cmp(&l_, &r_)),
-            },
+                    (_, _) => return_unless_equal!(cmp(&l_, &r_)),
+                }
+            }
             (Some(_), None) => return Greater,
             (None, Some(_)) => return Less,
             (None, None) => return Equal,
@@ -146,13 +161,16 @@ pub fn compare_ignore_case(left: &str, right: &str) -> Ordering {
     // XXX what we really want is a case folding!
     // Unicode case folding can be done iteratively, but currently we don't have them in stdlib.
 
-    let left_iter  =  left.chars().nfd().default_case_fold();
+    let left_iter = left.chars().nfd().default_case_fold();
     let right_iter = right.chars().nfd().default_case_fold();
 
-    compare_iter(left_iter, right_iter,
-                 |&c| c.is_whitespace(),
-                 |&l, &r| l.cmp(&r),
-                 |&c| c.to_digit(10).map(|v| v as isize))
+    compare_iter(
+        left_iter,
+        right_iter,
+        |&c| c.is_whitespace(),
+        |&l, &r| l.cmp(&r),
+        |&c| c.to_digit(10).map(|v| v as isize),
+    )
 }
 
 #[cfg(test)]
@@ -172,9 +190,14 @@ mod tests {
 
         for (i, &x) in strs.iter().enumerate() {
             for (j, &y) in strs.iter().enumerate() {
-                assert!(compare(x, y) == i.cmp(&j),
-                        "expected x {} y, returned x {} y (where x = `{}`, y = `{}`)",
-                        ordering_to_op(i.cmp(&j)), ordering_to_op(compare(x, y)), x, y);
+                assert!(
+                    compare(x, y) == i.cmp(&j),
+                    "expected x {} y, returned x {} y (where x = `{}`, y = `{}`)",
+                    ordering_to_op(i.cmp(&j)),
+                    ordering_to_op(compare(x, y)),
+                    x,
+                    y
+                );
             }
         }
     }
@@ -204,39 +227,41 @@ mod tests {
 
     #[test]
     fn test_longer() {
-        check_total_order(&[
-            "1-02",
-            "1-2",
-            "1-20",
-            "10-20",
-            "fred",
-            "jane",
-            "pic1",
-            "pic2",
-            "pic2a",
-            "pic3",
-            "pic4",
-            "pic4   alpha",
-            "pic 4 else",
-            "pic4  last",
-            "pic5",
-            "pic5.07",
-            "pic5.08",
-            "pic5.13",
-            "pic5.113",
-            "pic 5 something",
-            "pic 6",
-            "pic   7",
-            "pic100",
-            "pic100a",
-            "pic120",
-            "pic121",
-            "pic2000",
-            "tom",
-            "x2-g8",
-            "x2-y7",
-            "x2-y8",
-            "x8-y8",
-        ]);
+        check_total_order(
+            &[
+                "1-02",
+                "1-2",
+                "1-20",
+                "10-20",
+                "fred",
+                "jane",
+                "pic1",
+                "pic2",
+                "pic2a",
+                "pic3",
+                "pic4",
+                "pic4   alpha",
+                "pic 4 else",
+                "pic4  last",
+                "pic5",
+                "pic5.07",
+                "pic5.08",
+                "pic5.13",
+                "pic5.113",
+                "pic 5 something",
+                "pic 6",
+                "pic   7",
+                "pic100",
+                "pic100a",
+                "pic120",
+                "pic121",
+                "pic2000",
+                "tom",
+                "x2-g8",
+                "x2-y7",
+                "x2-y8",
+                "x8-y8",
+            ],
+        );
     }
 }
