@@ -21,11 +21,14 @@ This version of natural ordering is inspired by
 
 */
 
-#![crate_name = "natord"]
-#![crate_type = "lib"]
+extern crate caseless;
+extern crate unicode_normalization;
 
 use std::cmp::Ordering;
 use std::cmp::Ordering::{Less, Equal, Greater};
+
+use caseless::Caseless;
+use unicode_normalization::UnicodeNormalization;
 
 /// Compares two iterators of "characters" possibly containing "digits".
 /// The natural ordering can be customized with the following parameters:
@@ -128,23 +131,23 @@ pub fn compare_iter<T, L, R, Skip, Cmp, ToDigit>(left: L, right: R, mut skip: Sk
     }
 }
 
-/// Compares two strings case-sensitively.
+/// Compares two strings case-sensitively using Normal Form D.
 /// It skips any Unicode whitespaces and handles a series of decimal digits.
 pub fn compare(left: &str, right: &str) -> Ordering {
-    compare_iter(left.chars(), right.chars(),
+    compare_iter(left.chars().nfd(), right.chars().nfd(),
                  |&c| c.is_whitespace(),
                  |&l, &r| l.cmp(&r),
                  |&c| c.to_digit(10).map(|v| v as isize))
 }
 
-/// Compares two strings case-insensitively.
+/// Compares two strings case-insensitively using Normal Form D and Unicode case folding.
 /// It skips any Unicode whitespaces and handles a series of decimal digits.
 pub fn compare_ignore_case(left: &str, right: &str) -> Ordering {
     // XXX what we really want is a case folding!
     // Unicode case folding can be done iteratively, but currently we don't have them in stdlib.
 
-    let left_iter  =  left.chars().flat_map(|c| c.to_lowercase());
-    let right_iter = right.chars().flat_map(|c| c.to_lowercase());
+    let left_iter  =  left.chars().nfd().default_case_fold();
+    let right_iter = right.chars().nfd().default_case_fold();
 
     compare_iter(left_iter, right_iter,
                  |&c| c.is_whitespace(),
@@ -189,6 +192,14 @@ mod tests {
     #[test]
     fn test_leading_zeroes() {
         check_total_order(&["1.001", "1.002", "1.010", "1.02", "1.1", "1.3"]);
+    }
+
+    #[test]
+    fn test_accents() {
+        // lowercase e + accent grave
+        assert_eq!(compare("e\u{0301}", "\u{e9}"), Equal);
+        // katakana ka + voiced mark
+        assert_eq!(compare("\u{304c}", "\u{304b}\u{3099}"), Equal);
     }
 
     #[test]

@@ -11,6 +11,6 @@ keywords = ["sort", "order", "natural"]
 readme = "README.md"
 license = "MIT"
 
-[lib]
-name = "natord"
-path = "lib.rs"
+[dependencies]
+caseless = "0.1.3"
+unicode-normalization = "0.1.5"
