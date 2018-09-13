@@ -21,9 +21,6 @@ This version of natural ordering is inspired by
 
 */
 
-#![crate_name = "natord"]
-#![crate_type = "lib"]
-
 use std::cmp::Ordering;
 use std::cmp::Ordering::{Less, Equal, Greater};
 

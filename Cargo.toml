@@ -10,7 +10,3 @@ repository = "https://github.com/lifthrasiir/rust-natord"
 keywords = ["sort", "order", "natural"]
 readme = "README.md"
 license = "MIT"
-
-[lib]
-name = "natord"
-path = "lib.rs"
